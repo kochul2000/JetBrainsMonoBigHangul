@@ -1,0 +1,50 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      scale:
+        description: 'Hangul scale factor (default: 1.2)'
+        required: false
+        default: '1.2'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y python3-fontforge
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Setup venv with system-site-packages
+        run: |
+          uv venv --python $(python3 --version | grep -oP '\d+\.\d+') --system-site-packages
+          uv sync
+
+      - name: Build fonts
+        run: |
+          SCALE="${{ github.event.inputs.scale || '1.2' }}"
+          uv run build.py all "$SCALE"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: JetBrainsMonoBigHangul
+          path: out/*.ttf
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --title "${{ github.ref_name }}" \
+            --notes "Scale: ${{ github.event.inputs.scale || '1.2' }}x" \
+            out/*.ttf
