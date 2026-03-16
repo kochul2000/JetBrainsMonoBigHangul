@@ -14,6 +14,12 @@
 
 Claude Code 등 바이브 코딩 도구를 쓰면서 터미널에서 한글을 읽을 일이 크게 늘었습니다. 영어는 다소 작아도 읽히는데, 한글은 터미널에 따라 흐려지기도 하여 미적인 기준을 낮추고 실용성을 높였습니다. 노안이 와서 한글이 잘 보이지 않기 때문이기도 합니다.
 
+## 비교
+
+| Original | Big |
+|---|---|
+| ![original](original.png) | ![big](big.png) |
+
 ## 원본과의 차이
 
 | | 원본 (JetBrainsMonoHangul) | 이 프로젝트 (BigHangul) |
