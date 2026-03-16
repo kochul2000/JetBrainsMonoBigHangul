@@ -20,15 +20,19 @@ Windows Terminal, WSL, 698x116
 
 **Font size 10**
 
-| JetBrainsMonoHangul | JetBrainsMonoBigHangul |
-|---|---|
-| ![original-10](images/original-10.png) | ![big-10](images/big-10.png) |
+JetBrainsMonoHangul
+![original-10](images/original-10.png)
+
+JetBrainsMonoBigHangul
+![big-10](images/big-10.png)
 
 **Font size 9**
 
-| JetBrainsMonoHangul | JetBrainsMonoBigHangul |
-|---|---|
-| ![original-9](images/original-9.png) | ![big-9](images/big-9.png) |
+JetBrainsMonoHangul
+![original-9](images/original-9.png)
+
+JetBrainsMonoBigHangul
+![big-9](images/big-9.png)
 
 ## 원본과의 차이
 
