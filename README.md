@@ -1,64 +1,46 @@
-# JetBrainsMonoHangul
-<div align="center">
-    <img src="https://repository-images.githubusercontent.com/500120796/115b6aa3-1fc4-445d-914d-d35184754fa5">
-</div>
+# JetBrainsMonoBigHangul
 
-[JetBrains Mono](https://github.com/JetBrains/JetBrainsMono)에 [D2Coding](https://github.com/naver/d2codingfont)의 한글 영역 (U+3131-U+318E, U+AC00-U+D7A3)을 덧씌운 뒤 폭을 조정한 폰트입니다. [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts)도 릴리즈에 포함되어 있습니다.
+[JetBrainsMonoHangul](https://github.com/Jhyub/JetBrainsMonoHangul)을 포크하여 한글 가독성을 높인 프로그래밍 폰트입니다.
 
-본래 이름을 JetBrains D2정도로 지으려고 했으나 D2Coding이 RFN 라이선스를 사용하는 바람에 JetBrains Mono Hangul로 이름을 지었습니다.
+[JetBrains Mono](https://github.com/JetBrains/JetBrainsMono)에 [D2Coding](https://github.com/naver/d2codingfont)의 한글 글리프를 합치되, 원본보다 한글을 크고 굵게 표시합니다.
+
+## 왜 만들었는가
+
+미적으로는 별로지만, 실용성을 극대화하기 위해 만들었습니다.
+
+영어는 다소 작아도 읽히는데, 한글은 터미널에 따라 흐려지기도 하여 미적인 기준을 낮추고 실용성을 높였습니다. 노안이 와서 한글이 잘 보이지 않기 때문이기도 합니다.
+
+## 원본과의 차이
+
+### 1. 글리프 스케일링 (1.2x)
+
+한글 글리프 아웃라인을 1.2배 확대합니다.
+
+배율은 영문 기준 최대 너비를 넘지 않는 선에서 정했습니다. 영문에서 가장 넓은 'W'가 셀의 93.3%를 채우는데, 1.2배 적용 시 한글에서 가장 넓은 '짜'가 91.5%로 이를 넘지 않습니다. 이로써 영문 2글자가 한글 1글자 너비와 시각적으로 비슷해 보이게 됩니다.
+
+### 2. 웨이트 매칭
+
+원본은 모든 JetBrains Mono 웨이트에 D2 Coding Regular 하나만 사용합니다. Bold 영문 옆에 Regular 한글이 붙으면 한글만 가늘어 보입니다.
+
+이 프로젝트에서는:
+- Thin ~ Regular (+ Italic) → D2 Coding **Regular**
+- Medium ~ ExtraBold (+ Italic) → D2 Coding **Bold**
+
+### 3. 빌드 대상 축소
+
+실제로 코딩에 쓰이는 웨이트만 빌드합니다: Regular, Medium, Bold (+ 각 Italic).
 
 ## Quick Start
-``` shell
-$ sudo apt install python3-fontforge # or your preferred package manager
 
-$ git clone <repository>
-$ cd <repository>
+```shell
+$ sudo apt install python3-fontforge
 
-$ python build.py all
+$ git clone https://github.com/kochul2000/JetBrainsMonoBigHangul.git
+$ cd JetBrainsMonoBigHangul
+
+$ python3 build.py all
 ```
 
-fontforge는 pip에서 제공하지 않으므로 외부 패키지를 설치해야 합니다.  
-wget은 pip에서 제공하나 상황에 따라서 파이썬 가상 환경을 설정해야 합니다. wget 파이썬 패키지가 없을 경우 시스템에 설치된 wget으로 동작합니다.
-
-## Config
-`config.py`를 수정해주시면 됩니다.
-
-- `download_path`
-  -  폰트 빌드에 필요한 파일을 다운로드할 위치.
-  - 기본값: `'assets'`
-- `out_path`
-  - 빌드한 폰드를 내보낼 위치.
-  - 기본값: `'out'`
-- `jetbrains_mono_version`
-  - 사용할 JetBrains Mono 폰트의 버전.
-  - 기본값: `'2.304'`
-- `d2_coding_version`
-  - 사용할 D2Coding 폰트의 버전.
-  - 기본값: `'1.3.2'`
-- `d2_coding_date`
-  - 사용할 D2Coding 폰트의 릴리즈 날짜.
-  - 기본값: `'20180524'`
-- `jetbrains_mono_url`
-  - JetBrains Mono를 다운로드할 URL.
-  - 기본값: `jetbrains_mono_version`에 의해 자동 설정됨.
-- `d2_coding_url`
-  - D2Coding을 다운로드할 URL.
-  - 기본값: `d2_coding_version`, `d2_coding_date`에 의해 자동 설정됨.
-- `jetbrains_mono_name`
-  - JetBrains Mono를 다운로드할 때 사용할 이름.
-  - 기본값: `'JetBrains_Mono.zip'`
-- `d2_coding_name`
-  - D2Coding을 다운로드할 때 사용할 이름.
-  - 기본값: `'D2_Coding.zip'`
-- `d2_coding_width`
-  - 사용할 D2Coding의 글자 폭.
-  - 기본값: `1000`
-- `jetbrains_mono_width`
-  - 사용할 JetBrains Mono의 글자 폭.
-  - 기본값: `1200`
-- `block_system_wget`
-  - 외부 wget 사용 차단 여부.
-  - 기본값: `False`
-
 ## License
+
 OFL 하에 배포됩니다. LICENSE 파일을 참조해주세요.
