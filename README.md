@@ -1,14 +1,24 @@
 # JetBrainsMonoBigHangul
 
-[JetBrainsMonoHangul](https://github.com/Jhyub/JetBrainsMonoHangul)을 포크하여 한글 가독성을 높인 프로그래밍 폰트입니다.
+[JetBrains Mono](https://github.com/JetBrains/JetBrainsMono)에 [D2Coding](https://github.com/naver/d2codingfont)의 한글 글리프를 합치되, 한글을 크고 굵게 표시하는 프로그래밍 폰트입니다.
 
-[JetBrains Mono](https://github.com/JetBrains/JetBrainsMono)에 [D2Coding](https://github.com/naver/d2codingfont)의 한글 글리프를 합치되, 원본보다 한글을 크고 굵게 표시합니다.
+## 원본 리포
+
+이 프로젝트는 [JetBrainsMonoHangul](https://github.com/Jhyub/JetBrainsMonoHangul)을 포크한 것입니다. 원본은 한글 크기를 D2 Coding 원래 크기 그대로 유지하여 균형 잡힌 외형을 제공합니다. 한글이 커지는 게 싫다면 원본을 사용하세요.
 
 ## 왜 만들었는가
 
 미적으로는 별로지만, 실용성을 극대화하기 위해 만들었습니다.
 
 영어는 다소 작아도 읽히는데, 한글은 터미널에 따라 흐려지기도 하여 미적인 기준을 낮추고 실용성을 높였습니다. 노안이 와서 한글이 잘 보이지 않기 때문이기도 합니다.
+
+## 원본과의 차이
+
+| | 원본 (JetBrainsMonoHangul) | 이 프로젝트 (BigHangul) |
+|---|---|---|
+| 한글 크기 | D2 Coding 원본 크기 유지 | 1.2배 확대 |
+| 한글 웨이트 | 모든 웨이트에 Regular 사용 | Bold 웨이트에 D2 Coding Bold 매칭 |
+| 빌드 대상 | 전체 웨이트 + NL 변형 | Regular, Medium, Bold (+Italic) |
 
 ## 원본과의 차이
 
