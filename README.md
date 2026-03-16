@@ -68,7 +68,18 @@ $ HANGUL_SCALE=1.28 uv run build.py all
 
 실제로 코딩에 쓰이는 웨이트만 빌드합니다: Regular, Medium, Bold (+ 각 Italic).
 
-## Quick Start
+## 다운로드
+
+[Releases](https://github.com/kochul2000/JetBrainsMonoBigHangul/releases)에서 빌드된 폰트를 바로 받을 수 있습니다.
+
+| 패키지 | 포함 내용 |
+|---|---|
+| **essential** | Regular, Bold |
+| **all** | Regular, Bold, Medium + 각 Italic (6개) |
+
+대부분의 사용자는 **essential**이면 충분합니다. Italic이나 Medium 웨이트가 필요하면 **all**을 받으세요.
+
+## 직접 빌드
 
 ```shell
 $ sudo apt install python3-fontforge
