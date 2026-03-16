@@ -21,9 +21,9 @@ def usage():
     print(f'python {sys.argv[0]} <subcommand>')
     print(f'')
     print(f'subcommand:')
-    print(f'    all: automatically setup and build fonts.')
+    print(f'    all [scale]: automatically setup and build fonts. (default scale: 1.2)')
     print(f'    setup: download needed files and extract from zip.')
-    print(f'    build: outputs merged fonts.')
+    print(f'    build [scale]: outputs merged fonts. (default scale: 1.2)')
     print(f'    clean: remove all output files including downloaded files.')
 
 if len(sys.argv) == 1:
@@ -31,6 +31,15 @@ if len(sys.argv) == 1:
     exit(1)
 
 subcommand = sys.argv[1]
+
+if len(sys.argv) >= 3 and subcommand in ('all', 'build'):
+    import config
+    config.hangul_scale = float(sys.argv[2])
+
+if subcommand in ('all', 'build'):
+    import config
+    if config.hangul_scale > 1.28:
+        print(f'[WARN] hangul_scale={config.hangul_scale}은 1.28을 초과합니다. 일부 한글 글리프가 잘릴 수 있습니다.')
 
 def setup():
     print('[INFO] Download font files')
