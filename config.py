@@ -1,3 +1,5 @@
+import os
+
 download_path = 'assets'
 out_path = 'out'
 
@@ -13,6 +15,8 @@ d2_coding_name = 'D2_Coding.zip'
 
 d2_coding_width = 1000
 jetbrains_mono_width = 1200
+
+hangul_scale = float(os.environ.get('HANGUL_SCALE', '1.2'))
 
 version_name = "master"
 

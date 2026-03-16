@@ -29,7 +29,7 @@ def add_bearing(glyph, addition):
     glyph.right_side_bearing = addition // 2 + int(glyph.right_side_bearing)
 
 
-def prepare_hangul_glyphs(d2, scale=1.200):
+def prepare_hangul_glyphs(d2, scale=hangul_scale):
     """Scale Hangul glyph outlines slightly and center in target advance width."""
     hangul = d2.selection.select(("unicode", "ranges"), 0x3131, 0x318E) \
             .select(("unicode", "ranges", "more"), 0xAC00, 0xD7A3)
