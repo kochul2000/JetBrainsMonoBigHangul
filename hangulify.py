@@ -9,6 +9,27 @@ from config import *
 BOLD_WEIGHTS = {'Medium', 'SemiBold', 'Bold', 'ExtraBold'}
 BUILD_WEIGHTS = {'Regular', 'Medium', 'Bold'}
 
+# Codepoint ranges to pull from D2 Coding. JetBrains Mono has no glyphs at all
+# for these blocks, so without this they render via OS font fallback at an
+# inconsistent, undersized scale inside the monospace cell.
+GLYPH_RANGES = [
+    (0x3131, 0x318E),   # Hangul Compatibility Jamo
+    (0xAC00, 0xD7A3),   # Hangul Syllables
+    (0x2153, 0x215F),   # Fractions (⅓ ⅔ ⅛ ...)
+    (0x2160, 0x2188),   # Roman Numerals (Ⅰ Ⅱ Ⅲ ...)
+    (0x2460, 0x24FF),   # Enclosed Alphanumerics (①②③ ⓐⓑⓒ ㉑ ...)
+    (0x3200, 0x321E),   # Parenthesized Hangul/CJK
+    (0x3251, 0x325F),   # Circled Numbers 21-35 (㉑~㉟)
+    (0x3260, 0x327F),   # Circled Hangul Jamo/Syllables (㉠㉡㉢ ...)
+]
+
+
+def select_glyph_ranges(selection):
+    selection.select(("unicode", "ranges"), *GLYPH_RANGES[0])
+    for start, end in GLYPH_RANGES[1:]:
+        selection.select(("unicode", "ranges", "more"), start, end)
+    return selection
+
 
 def get_weight(filename):
     """Extract weight name from JetBrains Mono font filename."""
@@ -30,11 +51,12 @@ def add_bearing(glyph, addition):
 
 
 def prepare_hangul_glyphs(d2, scale=hangul_scale):
-    """Scale Hangul glyph outlines slightly and center in target advance width."""
-    hangul = d2.selection.select(("unicode", "ranges"), 0x3131, 0x318E) \
-            .select(("unicode", "ranges", "more"), 0xAC00, 0xD7A3)
+    """Scale glyph outlines slightly and center in target advance width."""
+    glyphs = select_glyph_ranges(d2.selection)
 
-    for i in hangul:
+    for i in glyphs:
+        if i not in d2:
+            continue
         glyph = d2[i]
         if glyph.references:
             glyph.unlinkRef()
@@ -77,8 +99,7 @@ def build_font():
         d2 = fontforge.open(d2_path)
         prepare_hangul_glyphs(d2)
 
-        d2.selection.select(("unicode", "ranges"), 0x3131, 0x318E) \
-            .select(("unicode", "ranges", "more"), 0xAC00, 0xD7A3)
+        select_glyph_ranges(d2.selection)
         d2.copy()
 
         for name in jb_fonts:
@@ -91,8 +112,7 @@ def build_font():
                 continue
 
             jb = fontforge.open(f"{download_path}/jb/fonts/ttf/{name}")
-            jb.selection.select(("unicode", "ranges"), 0x3131, 0x318E) \
-                .select(("unicode", "ranges", "more"), 0xAC00, 0xD7A3)
+            select_glyph_ranges(jb.selection)
             jb.paste()
 
             namel = name.split(".")
