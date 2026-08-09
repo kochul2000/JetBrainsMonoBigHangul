@@ -17,11 +17,24 @@ GLYPH_RANGES = [
     (0xAC00, 0xD7A3),   # Hangul Syllables
     (0x2153, 0x215F),   # Fractions (⅓ ⅔ ⅛ ...)
     (0x2160, 0x2188),   # Roman Numerals (Ⅰ Ⅱ Ⅲ ...)
-    (0x2460, 0x24FF),   # Enclosed Alphanumerics (①②③ ⓐⓑⓒ ㉑ ...)
+    (0x2460, 0x24FF),   # Enclosed Alphanumerics (①②③ ⓐⓑⓒ ...)
     (0x3200, 0x321E),   # Parenthesized Hangul/CJK
     (0x3251, 0x325F),   # Circled Numbers 21-35 (㉑~㉟)
     (0x3260, 0x327F),   # Circled Hangul Jamo/Syllables (㉠㉡㉢ ...)
 ]
+
+# East Asian Ambiguous ranges: terminals give these one cell (wcwidth=1), so
+# their advance must be a single JetBrains Mono cell or renderers shrink the
+# glyph to half size. The rest of GLYPH_RANGES is EAW=Wide (two cells).
+NARROW_RANGES = [
+    (0x2153, 0x215F),   # Fractions
+    (0x2160, 0x2188),   # Roman Numerals
+    (0x2460, 0x24FF),   # Enclosed Alphanumerics
+]
+
+
+def is_narrow(codepoint):
+    return any(start <= codepoint <= end for start, end in NARROW_RANGES)
 
 
 def select_glyph_ranges(selection):
@@ -51,7 +64,12 @@ def add_bearing(glyph, addition):
 
 
 def prepare_hangul_glyphs(d2, scale=hangul_scale):
-    """Scale glyph outlines slightly and center in target advance width."""
+    """Scale glyph outlines slightly and center in target advance width.
+
+    EAW=Wide glyphs land on two JetBrains Mono cells, EAW=Ambiguous ones on a
+    single cell. The scale factor is normalized by each glyph's original D2
+    advance so a full-width outline squeezed into one cell shrinks to fit.
+    """
     glyphs = select_glyph_ranges(d2.selection)
 
     for i in glyphs:
@@ -60,14 +78,21 @@ def prepare_hangul_glyphs(d2, scale=hangul_scale):
         glyph = d2[i]
         if glyph.references:
             glyph.unlinkRef()
-        glyph.transform(psMat.scale(scale))
+        if is_narrow(i):
+            target_width = jetbrains_mono_width // 2
+        else:
+            target_width = jetbrains_mono_width
+        d2_width = glyph.width if glyph.width > 0 else d2_coding_width
+        eff_scale = scale * (target_width / jetbrains_mono_width) \
+                * (d2_coding_width / d2_width)
+        glyph.transform(psMat.scale(eff_scale))
         bbox = glyph.boundingBox()
         if bbox[2] > bbox[0]:
             body_width = bbox[2] - bbox[0]
-            target_lsb = (jetbrains_mono_width - body_width) / 2
+            target_lsb = (target_width - body_width) / 2
             shift_x = target_lsb - bbox[0]
             glyph.transform(psMat.translate(shift_x, 0))
-        glyph.width = jetbrains_mono_width
+        glyph.width = target_width
 
 
 def replace_name(string):
