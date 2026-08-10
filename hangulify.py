@@ -32,6 +32,12 @@ NARROW_RANGES = [
     (0x2460, 0x24FF),   # Enclosed Alphanumerics
 ]
 
+# Vertical center of JetBrains Mono digits, and the side bearing left around a
+# full-width outline squeezed into a single cell. Used to place those squeezed
+# glyphs; see prepare_hangul_glyphs.
+NARROW_CENTER_Y = 365
+NARROW_SIDE_BEARING = 10
+
 
 def is_narrow(codepoint):
     return any(start <= codepoint <= end for start, end in NARROW_RANGES)
@@ -69,29 +75,45 @@ def prepare_hangul_glyphs(d2, scale=hangul_scale):
     EAW=Wide glyphs land on two JetBrains Mono cells, EAW=Ambiguous ones on a
     single cell. The scale factor is normalized by each glyph's original D2
     advance so a full-width outline squeezed into one cell shrinks to fit.
+
+    D2 draws the circled numbers (①②③) full-width even though terminals give
+    them one cell. Scaling those by advance ratio alone leaves ink to spare in
+    the cell and, since scaling happens about the baseline, drops them well
+    below the digit axis. They are fit to the cell by ink width and re-centered
+    on NARROW_CENTER_Y instead. Glyphs D2 already designed half-width (Ⅰ, ⅓)
+    need neither and keep the plain advance-ratio scale.
     """
-    glyphs = select_glyph_ranges(d2.selection)
+    glyphs = [i for i in select_glyph_ranges(d2.selection) if i in d2]
+
+    # Unlink every composite up front. Ⅱ and Ⅲ reference Ⅰ, so unlinking them
+    # mid-loop would copy an already-transformed Ⅰ and scale it twice.
+    for i in glyphs:
+        if d2[i].references:
+            d2[i].unlinkRef()
 
     for i in glyphs:
-        if i not in d2:
-            continue
         glyph = d2[i]
-        if glyph.references:
-            glyph.unlinkRef()
-        if is_narrow(i):
-            target_width = jetbrains_mono_width // 2
-        else:
-            target_width = jetbrains_mono_width
+        narrow = is_narrow(i)
+        target_width = jetbrains_mono_width // 2 if narrow \
+                else jetbrains_mono_width
         d2_width = glyph.width if glyph.width > 0 else d2_coding_width
-        eff_scale = scale * (target_width / jetbrains_mono_width) \
-                * (d2_coding_width / d2_width)
+        squeezed = narrow and d2_width > d2_coding_width // 2
+        bbox = glyph.boundingBox()
+        if squeezed and bbox[2] > bbox[0]:
+            eff_scale = (target_width - 2 * NARROW_SIDE_BEARING) \
+                    / (bbox[2] - bbox[0])
+        else:
+            eff_scale = scale * (target_width / jetbrains_mono_width) \
+                    * (d2_coding_width / d2_width)
         glyph.transform(psMat.scale(eff_scale))
         bbox = glyph.boundingBox()
         if bbox[2] > bbox[0]:
             body_width = bbox[2] - bbox[0]
             target_lsb = (target_width - body_width) / 2
             shift_x = target_lsb - bbox[0]
-            glyph.transform(psMat.translate(shift_x, 0))
+            shift_y = NARROW_CENTER_Y - (bbox[1] + bbox[3]) / 2 if squeezed \
+                    else 0
+            glyph.transform(psMat.translate(shift_x, shift_y))
         glyph.width = target_width
 
 
