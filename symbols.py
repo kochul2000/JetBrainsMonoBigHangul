@@ -25,12 +25,16 @@ DERIVED_SYMBOLS = {
 
 PAUSE_CODEPOINT = 0x23F8  # ⏸
 PAUSE_SOURCE = 0x25A0     # ■ 의 잉크 박스를 기준 틀로 쓴다
+# Italic 빌드에서도 막대는 세운 채 둔다 — JetBrains Mono 는 이런 기하 도형을
+# Italic 에서도 기울이지 않고, 이 리포의 한글도 마찬가지다.
 # ■ 잉크 폭 대비 막대 하나의 폭 비율. 두 막대 + 가운데 간격이 잉크 폭을
 # 채우도록 (bar, gap, bar) = (0.32, 0.36, 0.32) 로 나눈다.
 PAUSE_BAR_RATIO = 0.32
 
 
 def _has(font, codepoint):
+    # `in` 은 인코딩 슬롯이 없는 코드포인트에서 fontforge 버전에 따라
+    # TypeError 를 던질 수 있다 — 그 경우 "없음"으로 취급한다.
     try:
         return codepoint in font
     except TypeError:
@@ -46,6 +50,7 @@ def _copy_glyph(font, source, target):
     font[source].draw(pen)
     pen = None
     glyph.width = font[source].width
+    glyph.correctDirection()
 
 
 def _build_pause(font):
