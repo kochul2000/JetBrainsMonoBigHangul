@@ -41,6 +41,7 @@ JetBrainsMonoBigHangul
 | 한글 크기 | D2 Coding 원본 크기 유지 | 1.2배 확대 |
 | 한글 웨이트 | 모든 웨이트에 Regular 사용 | Bold 웨이트에 D2 Coding Bold 매칭 |
 | 빌드 대상 | 전체 웨이트 + NL 변형 | Regular, Medium, Bold (+Italic) |
+| 미디어 기호 | 없음 (JetBrains Mono 그대로) | ⏴⏵⏶⏷⏸⏹⏺ (U+23F4~U+23FA) 보충 |
 
 ### 글리프 스케일링 (기본 1.2x)
 
@@ -87,6 +88,12 @@ $ HANGUL_SCALE=1.28 uv run build.py all
 ### 빌드 대상 축소
 
 실제로 코딩에 쓰이는 웨이트만 빌드합니다: Regular, Medium, Bold (+ 각 Italic).
+
+### 미디어 컨트롤 기호 보충 (⏵ 등)
+
+JetBrains Mono에는 ⏵(U+23F5) 같은 미디어 컨트롤 기호가 없어서, Claude Code 상태줄(`⏵⏵ bypass permissions`) 등 터미널 TUI가 이 문자를 쓰면 OS 폰트 폴백에 의존하게 됩니다. 폰트 폴백이 없거나 다른 환경(원격 WebView, 일부 모바일)에서는 네모(tofu)로 깨집니다.
+
+이 프로젝트는 U+23F4~U+23FA(⏴⏵⏶⏷⏸⏹⏺)를 JetBrains Mono가 이미 가진 기하 도형(◀▶▲▼■●)에서 파생해 채웁니다 — 획 두께와 시각 크기가 원본 디자인과 일치합니다. ⏸만 ■의 잉크 박스에 맞춘 세로 막대 두 개로 합성합니다. 업스트림이 해당 글리프를 추가하면 그쪽을 우선합니다.
 
 ## 다운로드
 
