@@ -4,6 +4,7 @@ import shutil
 import os
 
 from config import *
+from symbols import add_media_symbols
 
 # JetBrains Mono weights that should use D2 Coding Bold
 BOLD_WEIGHTS = {'Medium', 'SemiBold', 'Bold', 'ExtraBold'}
@@ -161,6 +162,7 @@ def build_font():
             jb = fontforge.open(f"{download_path}/jb/fonts/ttf/{name}")
             select_glyph_ranges(jb.selection)
             jb.paste()
+            add_media_symbols(jb)
 
             namel = name.split(".")
             namel[-2] = replace_name(namel[-2])
